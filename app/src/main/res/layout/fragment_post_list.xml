@@ -24,7 +24,7 @@
             android:layout_gravity="center"
             android:visibility="gone" />
         <!--android:visibility="@{isLoading}"-->
-        
+
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/post_list_swipe_refresh_layout"
             android:layout_width="match_parent"
