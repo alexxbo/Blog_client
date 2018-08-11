@@ -37,6 +37,7 @@ public class PostListFragment extends Fragment {
             }
         }
     };
+    private PostRepository mRepository;
 
     public PostListFragment() {
     }
@@ -82,8 +83,8 @@ public class PostListFragment extends Fragment {
 //
 //        mPostAdapter.setPostList(posts);
 
-        PostRepository repository = PostRepository.getInstance();
-        repository.getAllPosts(new DataSource.LoadPostsCallback() {
+        mRepository = PostRepository.getInstance();
+        mRepository.getAllPosts(new DataSource.LoadPostsCallback() {
             @Override
             public void onPostsLoaded(List<Post> postList) {
                 mPostAdapter.setPostList(postList);
@@ -103,8 +104,7 @@ public class PostListFragment extends Fragment {
     }
 
     private void refreshContent() {
-        PostRepository repository = PostRepository.getInstance();
-        repository.getAllPosts(new DataSource.LoadPostsCallback() {
+        mRepository.getAllPosts(new DataSource.LoadPostsCallback() {
             @Override
             public void onPostsLoaded(List<Post> postList) {
                 mBinding.postListSwipeRefreshLayout.setRefreshing(false);
