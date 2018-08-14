@@ -36,7 +36,6 @@ public class PostListFragment extends Fragment implements PostListContract.View{
         @Override
         public void onClick(Post post) {
             if (post != null) {
-//                ((MainActivity) getActivity()).replaceFragment(PostDetailFragment.newInstance(post.getId()), PostDetailFragment.TAG);
                 mPresenter.openPostDetails(post);
             }
         }
@@ -80,52 +79,23 @@ public class PostListFragment extends Fragment implements PostListContract.View{
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-//        mRepository = PostRepository.getInstance();
-//        mRepository.getAllPosts(new PostsDataSource.LoadPostsCallback() {
-//            @Override
-//            public void onPostsLoaded(List<Post> postList) {
-//                mPostAdapter.setPostList(postList);
-//            }
-//
-//            @Override
-//            public void onDataNotAvailable() {
-//                Toast.makeText(getContext(), "Data Not Available", Toast.LENGTH_SHORT).show();
-//            }
-//        });
         mBinding.postListSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshContent();
-            }
-        });
-    }
-
-    private void refreshContent() {
-        mRepository.getAllPosts(new PostsDataSource.LoadPostsCallback() {
-            @Override
-            public void onPostsLoaded(List<Post> postList) {
-                mBinding.postListSwipeRefreshLayout.setRefreshing(false);
-                mPostAdapter.setPostList(postList);
-            }
-
-            @Override
-            public void onDataNotAvailable() {
-                mBinding.postListSwipeRefreshLayout.setRefreshing(false);
-                Toast.makeText(getContext(), "Data Not Available", Toast.LENGTH_SHORT).show();
+                mPresenter.updatePosts();
             }
         });
     }
 
     @Override
     public void setLoadingIndicator(boolean active) {
-        mBinding.loadProgress.setVisibility(View.VISIBLE);
+        mBinding.postListSwipeRefreshLayout.setRefreshing(active);
         mBinding.postList.setVisibility(View.GONE);
     }
 
     @Override
     public void showPosts(List<Post> posts) {
         mPostAdapter.setPostList(posts);
-        mBinding.loadProgress.setVisibility(View.GONE);
         mBinding.postList.setVisibility(View.VISIBLE);
     }
 

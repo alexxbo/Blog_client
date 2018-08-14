@@ -11,12 +11,6 @@
         android:paddingTop="8dp"
         tools:context=".ui.postlist.PostListFragment">
 
-        <ProgressBar
-            android:id="@+id/load_progress"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center" />
-
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/post_list_swipe_refresh_layout"
             android:layout_width="match_parent"
