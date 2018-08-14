@@ -1,4 +1,4 @@
-package com.alexander_borovskoy.blogclient.ui;
+package com.alexander_borovskoy.blogclient.ui.postdetails;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -9,13 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.alexander_borovskoy.blogclient.PostRepository;
 import com.alexander_borovskoy.blogclient.R;
+import com.alexander_borovskoy.blogclient.data.source.PostRepository;
+import com.alexander_borovskoy.blogclient.data.source.PostsDataSource;
 import com.alexander_borovskoy.blogclient.databinding.FragmentPostDetailBinding;
-import com.alexander_borovskoy.blogclient.db.Comment;
-import com.alexander_borovskoy.blogclient.db.Mark;
-import com.alexander_borovskoy.blogclient.db.Post;
-import com.alexander_borovskoy.blogclient.source.DataSource;
+import com.alexander_borovskoy.blogclient.data.Comment;
+import com.alexander_borovskoy.blogclient.data.Mark;
+import com.alexander_borovskoy.blogclient.data.Post;
 
 import java.util.List;
 
@@ -60,7 +60,7 @@ public class PostDetailFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         PostRepository repository = PostRepository.getInstance();
-        repository.getPost(mPostId, new DataSource.GetPostsCallback() {
+        repository.getPost(mPostId, new PostsDataSource.GetPostsCallback() {
             @Override
             public void onPostsLoaded(Post post) {
                 mBinding.tvTitle.setText(post.getTitle());
@@ -74,7 +74,7 @@ public class PostDetailFragment extends Fragment {
             }
         });
 
-        repository.getPostMarks(mPostId, new DataSource.LoadPostMarksCallback() {
+        repository.getPostMarks(mPostId, new PostsDataSource.LoadPostMarksCallback() {
             @Override
             public void onPostMarksLoaded(List<Mark> markList) {
                 for (Mark mark : markList) {
@@ -88,7 +88,7 @@ public class PostDetailFragment extends Fragment {
             }
         });
 
-        repository.getPostComments(mPostId, new DataSource.LoadPostCommentsCallback() {
+        repository.getPostComments(mPostId, new PostsDataSource.LoadPostCommentsCallback() {
             @Override
             public void onPostCommentsLoaded(List<Comment> commentList) {
                 mCommentAdapter.setCommentList(commentList);

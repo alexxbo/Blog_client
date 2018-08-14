@@ -1,4 +1,4 @@
-package com.alexander_borovskoy.blogclient.ui;
+package com.alexander_borovskoy.blogclient.ui.postlist;
 
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.alexander_borovskoy.blogclient.R;
 import com.alexander_borovskoy.blogclient.databinding.ItemPostBinding;
-import com.alexander_borovskoy.blogclient.db.Post;
+import com.alexander_borovskoy.blogclient.data.Post;
 
 import java.util.List;
 import java.util.Objects;

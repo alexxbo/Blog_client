@@ -5,7 +5,7 @@
     <data>
         <variable
             name="comment"
-            type="com.alexander_borovskoy.blogclient.db.Comment"/>
+            type="com.alexander_borovskoy.blogclient.data.Comment"/>
     </data>
 
     <android.support.constraint.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"

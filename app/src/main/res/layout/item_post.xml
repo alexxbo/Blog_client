@@ -7,11 +7,11 @@
 
         <variable
             name="post"
-            type="com.alexander_borovskoy.blogclient.db.Post" />
+            type="com.alexander_borovskoy.blogclient.data.Post" />
 
         <variable
             name="callback"
-            type="com.alexander_borovskoy.blogclient.ui.PostClickCallback" />
+            type="com.alexander_borovskoy.blogclient.ui.postlist.PostClickCallback" />
     </data>
 
     <android.support.constraint.ConstraintLayout

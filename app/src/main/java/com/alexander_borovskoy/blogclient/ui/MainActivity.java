@@ -10,6 +10,7 @@ import android.view.MenuItem;
 
 import com.alexander_borovskoy.blogclient.R;
 import com.alexander_borovskoy.blogclient.databinding.ActivityMainBinding;
+import com.alexander_borovskoy.blogclient.ui.postlist.PostListFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
                     .addToBackStack(PostListFragment.TAG)
                     .replace(R.id.container, PostListFragment.newInstance())
                     .commit();
-//            replaceFragment(PostListFragment.newInstance(), PostListFragment.TAG);
         }
     }
 

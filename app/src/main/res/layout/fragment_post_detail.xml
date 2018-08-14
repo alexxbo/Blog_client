@@ -10,7 +10,7 @@
         android:paddingEnd="16dp"
         android:paddingStart="16dp"
         android:paddingTop="16dp"
-        tools:context=".ui.PostDetailFragment">
+        tools:context=".ui.postdetails.PostDetailFragment">
 
         <TextView
             android:id="@+id/tv_title"

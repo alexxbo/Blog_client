@@ -1,13 +1,12 @@
-package com.alexander_borovskoy.blogclient;
+package com.alexander_borovskoy.blogclient.data.source;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.alexander_borovskoy.blogclient.db.Comment;
-import com.alexander_borovskoy.blogclient.db.Mark;
-import com.alexander_borovskoy.blogclient.db.Post;
-import com.alexander_borovskoy.blogclient.source.BlogService;
-import com.alexander_borovskoy.blogclient.source.DataSource;
+import com.alexander_borovskoy.blogclient.data.Comment;
+import com.alexander_borovskoy.blogclient.data.Mark;
+import com.alexander_borovskoy.blogclient.data.Post;
+import com.alexander_borovskoy.blogclient.data.source.remote.BlogService;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -19,7 +18,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class PostRepository implements DataSource{
+public class PostRepository implements PostsDataSource{
 
     private static final Object LOCK = new Object();
     private static final String TAG = "LOG TAG";

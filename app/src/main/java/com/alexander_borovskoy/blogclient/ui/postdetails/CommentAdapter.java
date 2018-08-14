@@ -1,16 +1,15 @@
-package com.alexander_borovskoy.blogclient.ui;
+package com.alexander_borovskoy.blogclient.ui.postdetails;
 
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.alexander_borovskoy.blogclient.R;
 import com.alexander_borovskoy.blogclient.databinding.ItemCommentBinding;
-import com.alexander_borovskoy.blogclient.db.Comment;
+import com.alexander_borovskoy.blogclient.data.Comment;
 
 import java.util.List;
 import java.util.Objects;

@@ -4,26 +4,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-            name="isLoading"
-            type="boolean" />
-    </data>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="8dp"
-        tools:context=".ui.PostListFragment">
+        tools:context=".ui.postlist.PostListFragment">
 
         <ProgressBar
             android:id="@+id/load_progress"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:visibility="gone" />
-        <!--android:visibility="@{isLoading}"-->
+            android:layout_gravity="center" />
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/post_list_swipe_refresh_layout"
@@ -38,7 +30,28 @@
                 tools:listitem="@layout/item_post" />
         </android.support.v4.widget.SwipeRefreshLayout>
 
-        <!--android:visibility="@{!isLoading}"-->
+        <LinearLayout
+            android:visibility="gone"
+            android:gravity="center"
+            android:id="@+id/no_posts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/no_posts_icon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_error_grey_700_36dp" />
+
+            <TextView
+                android:id="@+id/tv_no_posts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
 
     </FrameLayout>
 </layout>

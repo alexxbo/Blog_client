@@ -1,8 +1,8 @@
-package com.alexander_borovskoy.blogclient.source;
+package com.alexander_borovskoy.blogclient.data.source.remote;
 
-import com.alexander_borovskoy.blogclient.db.Comment;
-import com.alexander_borovskoy.blogclient.db.Mark;
-import com.alexander_borovskoy.blogclient.db.Post;
+import com.alexander_borovskoy.blogclient.data.Comment;
+import com.alexander_borovskoy.blogclient.data.Mark;
+import com.alexander_borovskoy.blogclient.data.Post;
 
 import java.util.List;
 
