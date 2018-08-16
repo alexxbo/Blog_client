@@ -11,11 +11,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.alexander_borovskoy.blogclient.R;
 import com.alexander_borovskoy.blogclient.data.source.PostRepository;
-import com.alexander_borovskoy.blogclient.data.source.PostsDataSource;
 import com.alexander_borovskoy.blogclient.databinding.FragmentPostListBinding;
 import com.alexander_borovskoy.blogclient.data.Post;
 import com.alexander_borovskoy.blogclient.ui.MainActivity;
@@ -26,9 +24,6 @@ import java.util.List;
 
 public class PostListFragment extends Fragment implements PostListContract.View{
     public static final String TAG = "PostListFragment";
-//    private static final String ARG_PARAM1 = "param1";
-
-    //    private String mParam1;
     private PostListContract.Presenter mPresenter;
     private PostAdapter mPostAdapter;
     private FragmentPostListBinding mBinding;
@@ -45,22 +40,8 @@ public class PostListFragment extends Fragment implements PostListContract.View{
     public PostListFragment() {
     }
 
-    public static PostListFragment newInstance(/*String param1, String param2*/) {
-        PostListFragment fragment = new PostListFragment();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
-//        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
+    public static PostListFragment newInstance() {
+        return new PostListFragment();
     }
 
     @Override
@@ -109,7 +90,7 @@ public class PostListFragment extends Fragment implements PostListContract.View{
 
     @Override
     public void showLoadingPostsError() {
-        showMessage(getString(R.string.loading_posts_error));
+        showMessage(getString(R.string.loading_error));
     }
 
     private void showMessage(String message) {
@@ -120,8 +101,6 @@ public class PostListFragment extends Fragment implements PostListContract.View{
     public void showNoPosts() {
         mBinding.postList.setVisibility(View.GONE);
         mBinding.noPosts.setVisibility(View.VISIBLE);
-        mBinding.tvNoPosts.setText(getResources().getString(R.string.no_posts_all));
-        mBinding.noPostsIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_error_grey_700_36dp));
     }
 
     @Override
