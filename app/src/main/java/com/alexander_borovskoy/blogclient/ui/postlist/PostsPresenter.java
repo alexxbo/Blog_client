@@ -13,11 +13,11 @@ import java.util.List;
 public class PostsPresenter implements PostListContract.Presenter {
 
     private static final String TAG = "PostsPresenter";
-    private final PostRepository mRepo;
+    private final PostsDataSource mRepo;
     private final PostListContract.View mPostsView;
 
 
-    public PostsPresenter(@NonNull PostRepository repository, @NonNull PostListContract.View postsView) {
+    public PostsPresenter(@NonNull PostsDataSource repository, @NonNull PostListContract.View postsView) {
         this.mRepo = repository;
         this.mPostsView = postsView;
         mPostsView.setPresenter(this);

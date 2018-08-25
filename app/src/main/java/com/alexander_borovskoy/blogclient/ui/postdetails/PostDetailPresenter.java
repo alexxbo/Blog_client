@@ -14,11 +14,11 @@ import java.util.List;
 public class PostDetailPresenter implements PostDetailContract.Presenter {
 
     private static final String TAG = "PostDetailPresenter";
-    private final PostRepository mRepo;
+    private final PostsDataSource mRepo;
     private final PostDetailContract.View mPostDetailView;
     private final Long mPostId;
 
-    public PostDetailPresenter(@NonNull Long mPostId, @NonNull PostRepository mRepo, @NonNull PostDetailContract.View mPostDetailView) {
+    public PostDetailPresenter(@NonNull Long mPostId, @NonNull PostsDataSource mRepo, @NonNull PostDetailContract.View mPostDetailView) {
         this.mRepo = mRepo;
         this.mPostId = mPostId;
         this.mPostDetailView = mPostDetailView;

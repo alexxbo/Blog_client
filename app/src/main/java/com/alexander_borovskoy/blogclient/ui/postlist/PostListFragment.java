@@ -13,29 +13,25 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alexander_borovskoy.blogclient.R;
-import com.alexander_borovskoy.blogclient.data.source.PostRepository;
-import com.alexander_borovskoy.blogclient.databinding.FragmentPostListBinding;
+import com.alexander_borovskoy.blogclient.app.App;
 import com.alexander_borovskoy.blogclient.data.Post;
+import com.alexander_borovskoy.blogclient.databinding.FragmentPostListBinding;
 import com.alexander_borovskoy.blogclient.ui.MainActivity;
 import com.alexander_borovskoy.blogclient.ui.postdetails.PostDetailFragment;
 
 import java.util.List;
 
+import javax.inject.Inject;
 
-public class PostListFragment extends Fragment implements PostListContract.View{
+
+public class PostListFragment extends Fragment implements PostListContract.View, PostClickCallback {
+
     public static final String TAG = "PostListFragment";
-    private PostListContract.Presenter mPresenter;
-    private PostAdapter mPostAdapter;
     private FragmentPostListBinding mBinding;
-    private PostClickCallback mPostClickCallback = new PostClickCallback() {
-        @Override
-        public void onClick(Post post) {
-            if (post != null) {
-                mPresenter.openPostDetails(post);
-            }
-        }
-    };
-    private PostRepository mRepository;
+    @Inject
+    PostListContract.Presenter mPresenter;
+    @Inject
+    PostAdapter mPostAdapter;
 
     public PostListFragment() {
     }
@@ -45,14 +41,18 @@ public class PostListFragment extends Fragment implements PostListContract.View{
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        App.getInstance()
+                .getComponentsHolder()
+                .getPostListComponent(this)
+                .inject(this);
+
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_post_list, container, false);
-        mPostAdapter = new PostAdapter(mPostClickCallback);
         mBinding.postList.setAdapter(mPostAdapter);
-        mRepository = PostRepository.getInstance();
-        mPresenter = new PostsPresenter(mRepository, this);
         mPresenter.onViewCreated();
+
         return mBinding.getRoot();
     }
 
@@ -112,5 +112,13 @@ public class PostListFragment extends Fragment implements PostListContract.View{
     public void onDestroy() {
         super.onDestroy();
         mPresenter.onViewDestroyed();
+        App.getInstance().getComponentsHolder().releasePostListComponent();
+    }
+
+    @Override
+    public void onClick(Post post) {
+        if (post != null) {
+            mPresenter.openPostDetails(post);
+        }
     }
 }

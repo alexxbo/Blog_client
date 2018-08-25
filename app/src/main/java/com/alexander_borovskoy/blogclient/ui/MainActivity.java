@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.alexander_borovskoy.blogclient.R;
+import com.alexander_borovskoy.blogclient.app.App;
 import com.alexander_borovskoy.blogclient.databinding.ActivityMainBinding;
 import com.alexander_borovskoy.blogclient.ui.postlist.PostListFragment;
 
@@ -20,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
         ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         setSupportActionBar(binding.toolbar);
 
+        App.getInstance().getComponentsHolder().getDataSourceComponent();
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .addToBackStack(PostListFragment.TAG)
@@ -27,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -75,5 +77,11 @@ public class MainActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        App.getInstance().getComponentsHolder().releaseDataSourceComponent();
     }
 }

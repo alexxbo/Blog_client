@@ -11,23 +11,30 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alexander_borovskoy.blogclient.R;
-import com.alexander_borovskoy.blogclient.data.source.PostRepository;
-import com.alexander_borovskoy.blogclient.databinding.FragmentPostDetailBinding;
+import com.alexander_borovskoy.blogclient.app.App;
 import com.alexander_borovskoy.blogclient.data.Comment;
 import com.alexander_borovskoy.blogclient.data.Mark;
 import com.alexander_borovskoy.blogclient.data.Post;
+import com.alexander_borovskoy.blogclient.data.source.PostsDataSource;
+import com.alexander_borovskoy.blogclient.databinding.FragmentPostDetailBinding;
+import com.alexander_borovskoy.blogclient.ui.postdetails.di.PostDetailModule;
 
 import java.util.List;
 
-public class PostDetailFragment extends Fragment implements PostDetailContract.View{
+import javax.inject.Inject;
+
+public class PostDetailFragment extends Fragment implements PostDetailContract.View {
     private static final String ARG_POST_ID = "post id";
     public static final String TAG = "PostDetailFragment";
 
     private long mPostId;
     private FragmentPostDetailBinding mBinding;
-    private CommentAdapter mCommentAdapter;
-    private PostRepository mRepository;
-    private PostDetailContract.Presenter mPresenter;
+    @Inject
+    CommentAdapter mCommentAdapter;
+    @Inject
+    PostsDataSource mRepository;
+    @Inject
+    PostDetailContract.Presenter mPresenter;
 
     public PostDetailFragment() {
     }
@@ -51,26 +58,30 @@ public class PostDetailFragment extends Fragment implements PostDetailContract.V
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_post_detail, container, false);
-        mCommentAdapter = new CommentAdapter();
+        mBinding = DataBindingUtil
+                .inflate(inflater, R.layout.fragment_post_detail, container, false);
+
+        App.getInstance()
+                .getComponentsHolder()
+                .getPostDetailComponent(this, mPostId)
+                .inject(this);
+
         mBinding.commentsRecycler.setAdapter(mCommentAdapter);
-        mRepository = PostRepository.getInstance();
-        mPresenter = new PostDetailPresenter(mPostId, mRepository, this);
         mPresenter.onViewCreated();
+
         return mBinding.getRoot();
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
     }
 
     @Override
     public void setLoadingIndicator(boolean active) {
         // TODO: 16.08.2018 implements method setLoadingIndicator
-        if (active){
-            
+        if (active) {
+
         } else {
 
         }
@@ -112,8 +123,8 @@ public class PostDetailFragment extends Fragment implements PostDetailContract.V
 
     @Override
     public void showNoComments() {
-      mBinding.noComments.setVisibility(View.VISIBLE);
-      mBinding.commentsRecycler.setVisibility(View.GONE);
+        mBinding.noComments.setVisibility(View.VISIBLE);
+        mBinding.commentsRecycler.setVisibility(View.GONE);
     }
 
     @Override
@@ -125,5 +136,6 @@ public class PostDetailFragment extends Fragment implements PostDetailContract.V
     public void onDestroy() {
         super.onDestroy();
         mPresenter.onViewDestroyed();
+        App.getInstance().getComponentsHolder().releasePostDetailComponent();
     }
 }

@@ -7,6 +7,7 @@ import com.alexander_borovskoy.blogclient.data.Comment;
 import com.alexander_borovskoy.blogclient.data.Mark;
 import com.alexander_borovskoy.blogclient.data.Post;
 import com.alexander_borovskoy.blogclient.data.source.remote.BlogService;
+import com.alexander_borovskoy.blogclient.utils.AppExecutors;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -20,41 +21,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PostRepository implements PostsDataSource{
 
-    private static final Object LOCK = new Object();
     private static final String TAG = "LOG TAG";
-    private static PostRepository sInstance;
-//    private AppExecutors mExecutors;
+    private AppExecutors mExecutors;
     private BlogService mBlogService;
 
-    private PostRepository(/*AppExecutors mExecutors*/) {
-//        this.mExecutors = mExecutors;
-        final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .readTimeout(60, TimeUnit.SECONDS)
-                .connectTimeout(60, TimeUnit.SECONDS)
-                .build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BlogService.API_BLOG_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(okHttpClient)
-                .build();
-
-        mBlogService = retrofit.create(BlogService.class);
+    public PostRepository(AppExecutors executors, BlogService blogService) {
+        mBlogService = blogService;
+        mExecutors = executors;
     }
-
-    public synchronized static PostRepository getInstance(
-//        AppExecutors executors
-    ){
-        Log.d(TAG, "Getting the repository");
-        if (sInstance == null) {
-            synchronized (LOCK) {
-                sInstance = new PostRepository(/*executors*/);
-                Log.d(TAG, "Made new repository");
-            }
-        }
-        return sInstance;
-    }
-
 
     @Override
     public void getAllPosts(@NonNull final LoadPostsCallback callback) {
