@@ -1,102 +1,154 @@
 package com.alexander_borovskoy.blogclient.data.source;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.alexander_borovskoy.blogclient.data.Comment;
 import com.alexander_borovskoy.blogclient.data.Mark;
 import com.alexander_borovskoy.blogclient.data.Post;
-import com.alexander_borovskoy.blogclient.data.source.remote.BlogService;
-import com.alexander_borovskoy.blogclient.utils.AppExecutors;
+import com.alexander_borovskoy.blogclient.data.source.local.LocalPostRepository;
+import com.alexander_borovskoy.blogclient.data.source.remote.RemotePostRepository;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import okhttp3.OkHttpClient;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import javax.inject.Inject;
 
-public class PostRepository implements PostsDataSource{
+public class PostRepository implements PostsDataSource {
 
     private static final String TAG = "LOG TAG";
-    private AppExecutors mExecutors;
-    private BlogService mBlogService;
+    private final RemotePostRepository remoteRepository;
+    private final LocalPostRepository localRepository;
 
-    public PostRepository(AppExecutors executors, BlogService blogService) {
-        mBlogService = blogService;
-        mExecutors = executors;
+    @Inject
+    public PostRepository(RemotePostRepository remoteRepository,
+                          LocalPostRepository localRepository) {
+        this.remoteRepository = remoteRepository;
+        this.localRepository = localRepository;
     }
 
     @Override
     public void getAllPosts(@NonNull final LoadPostsCallback callback) {
-        mBlogService.getAllPosts().enqueue(new Callback<List<Post>>() {
+        localRepository.getAllPosts(new LoadPostsCallback() {
             @Override
-            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
-                Log.i(TAG, "onResponse: code = " + response.code());
-                if (response.isSuccessful()){
-                    callback.onPostsLoaded(response.body());
-                }
+            public void onPostsLoaded(List<Post> postList) {
+                callback.onPostsLoaded(postList);
             }
 
             @Override
-            public void onFailure(Call<List<Post>> call, Throwable t) {
-                callback.onDataNotAvailable();
-                Log.d(TAG, "onFailure: " + t.getMessage());
+            public void onDataNotAvailable() {
+                getPostsFromRemoteDataSource(callback);
             }
         });
     }
 
     @Override
-    public void getPost(long postId, @NonNull final GetPostsCallback callback) {
-        mBlogService.getPostById(postId).enqueue(new Callback<Post>() {
+    public void getPost(final long postId, @NonNull final LoadPostCallback callback) {
+        localRepository.getPost(postId, new LoadPostCallback() {
             @Override
-            public void onResponse(Call<Post> call, Response<Post> response) {
-                if (response.isSuccessful()){
-                    callback.onPostsLoaded(response.body());
-                }
+            public void onPostLoaded(Post post) {
+                callback.onPostLoaded(post);
             }
 
             @Override
-            public void onFailure(Call<Post> call, Throwable t) {
-                callback.onDataNotAvailable();
+            public void onDataNotAvailable() {
+                // TODO: 27.08.2018 refactoring
+                remoteRepository.getPost(postId, new LoadPostCallback() {
+                    @Override
+                    public void onPostLoaded(Post post) {
+                        callback.onPostLoaded(post);
+                        localRepository.addPost(post);
+                    }
+
+                    @Override
+                    public void onDataNotAvailable() {
+                        callback.onDataNotAvailable();
+                    }
+                });
             }
         });
     }
 
     @Override
-    public void getPostMarks(long postId, @NonNull final LoadPostMarksCallback callback) {
-        mBlogService.getPostMarks(postId).enqueue(new Callback<List<Mark>>() {
+    public void getPostMarks(final long postId, @NonNull final LoadPostMarksCallback callback) {
+        localRepository.getPostMarks(postId, new LoadPostMarksCallback() {
             @Override
-            public void onResponse(Call<List<Mark>> call, Response<List<Mark>> response) {
-                if (response.isSuccessful()) {
-                    callback.onPostMarksLoaded(response.body());
-                }
+            public void onPostMarksLoaded(List<Mark> markList) {
+                callback.onPostMarksLoaded(markList);
             }
 
             @Override
-            public void onFailure(Call<List<Mark>> call, Throwable t) {
-                callback.onDataNotAvailable();
+            public void onDataNotAvailable() {
+                getMarksFromRemoteDataSource(postId, callback);
             }
         });
     }
 
     @Override
-    public void getPostComments(long postId, @NonNull final LoadPostCommentsCallback callback) {
-        mBlogService.getPostComments(postId).enqueue(new Callback<List<Comment>>() {
+    public void getPostComments(final long postId, @NonNull final LoadPostCommentsCallback callback) {
+        localRepository.getPostComments(postId, new LoadPostCommentsCallback() {
             @Override
-            public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
-                if (response.isSuccessful()){
-                    callback.onPostCommentsLoaded(response.body());
-                }
+            public void onPostCommentsLoaded(List<Comment> commentList) {
+                callback.onPostCommentsLoaded(commentList);
             }
 
             @Override
-            public void onFailure(Call<List<Comment>> call, Throwable t) {
+            public void onDataNotAvailable() {
+                getCommentsFromRemoteDataSource(postId, callback);
+            }
+        });
+    }
+
+    private void getPostsFromRemoteDataSource(final LoadPostsCallback callback) {
+        remoteRepository.getAllPosts(new LoadPostsCallback() {
+            @Override
+            public void onPostsLoaded(List<Post> postList) {
+                refreshLocalDataSource(postList);
+                callback.onPostsLoaded(postList);
+            }
+
+            @Override
+            public void onDataNotAvailable() {
                 callback.onDataNotAvailable();
             }
         });
+    }
+
+    private void getCommentsFromRemoteDataSource(final long postId,
+                                                 final LoadPostCommentsCallback callback) {
+        remoteRepository.getPostComments(postId, new LoadPostCommentsCallback() {
+            @Override
+            public void onPostCommentsLoaded(List<Comment> commentList) {
+                callback.onPostCommentsLoaded(commentList);
+                List<Comment> commentsWithPostId =
+                        localRepository.setPostIdForComments(commentList, postId);
+                localRepository.addComments(commentsWithPostId);
+            }
+
+            @Override
+            public void onDataNotAvailable() {
+                callback.onDataNotAvailable();
+            }
+        });
+    }
+
+    private void getMarksFromRemoteDataSource(final long postId,
+                                              final LoadPostMarksCallback callback) {
+        remoteRepository.getPostMarks(postId, new LoadPostMarksCallback() {
+            @Override
+            public void onPostMarksLoaded(List<Mark> markList) {
+                callback.onPostMarksLoaded(markList);
+                List<Mark> marksWithPostId = localRepository.setPostIdForMarks(markList, postId);
+                localRepository.addPostMarks(marksWithPostId);
+            }
+
+            @Override
+            public void onDataNotAvailable() {
+                callback.onDataNotAvailable();
+            }
+        });
+    }
+
+    private void refreshLocalDataSource(List<Post> postList) {
+        localRepository.deleteAll();
+        localRepository.addPosts(postList);
     }
 }

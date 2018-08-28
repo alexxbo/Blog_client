@@ -94,7 +94,7 @@ public class PostListFragment extends Fragment implements PostListContract.View,
     }
 
     private void showMessage(String message) {
-        Snackbar.make(getView(), message, Snackbar.LENGTH_LONG).show();
+        Snackbar.make(mBinding.postList, message, Snackbar.LENGTH_LONG).show();
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,6 @@ import com.alexander_borovskoy.blogclient.data.Mark;
 import com.alexander_borovskoy.blogclient.data.Post;
 import com.alexander_borovskoy.blogclient.data.source.PostsDataSource;
 import com.alexander_borovskoy.blogclient.databinding.FragmentPostDetailBinding;
-import com.alexander_borovskoy.blogclient.ui.postdetails.di.PostDetailModule;
 
 import java.util.List;
 
@@ -68,6 +68,12 @@ public class PostDetailFragment extends Fragment implements PostDetailContract.V
 
         mBinding.commentsRecycler.setAdapter(mCommentAdapter);
         mPresenter.onViewCreated();
+        mBinding.postCommentsSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mPresenter.updatePostComments();
+            }
+        });
 
         return mBinding.getRoot();
     }
@@ -80,11 +86,8 @@ public class PostDetailFragment extends Fragment implements PostDetailContract.V
     @Override
     public void setLoadingIndicator(boolean active) {
         // TODO: 16.08.2018 implements method setLoadingIndicator
-        if (active) {
-
-        } else {
-
-        }
+        mBinding.postCommentsSwipeRefreshLayout.setRefreshing(active);
+        mBinding.commentsRecycler.setVisibility(View.GONE);
     }
 
     @Override
@@ -114,11 +117,13 @@ public class PostDetailFragment extends Fragment implements PostDetailContract.V
 
     @Override
     public void showLoadingPostCommentsError() {
-        showMessage(getString(R.string.loading_error));
+        if (this.isDetached()) {
+            showMessage(getString(R.string.loading_error));
+        }
     }
 
     private void showMessage(String message) {
-        Snackbar.make(getView(), message, Snackbar.LENGTH_LONG).show();
+        Snackbar.make(mBinding.commentsRecycler, message, Snackbar.LENGTH_LONG).show();
     }
 
     @Override

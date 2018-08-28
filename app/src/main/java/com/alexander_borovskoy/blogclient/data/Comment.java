@@ -3,7 +3,9 @@ package com.alexander_borovskoy.blogclient.data;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Comment {
+import io.realm.RealmObject;
+
+public class Comment extends RealmObject {
 
     @SerializedName("author")
     @Expose
@@ -17,6 +19,10 @@ public class Comment {
     @SerializedName("text")
     @Expose
     private String text;
+    private long postId;
+
+    public Comment() {
+    }
 
     public Comment(String author, String datePublic, long id, String text) {
         this.author = author;
@@ -55,5 +61,13 @@ public class Comment {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public long getPostId() {
+        return postId;
+    }
+
+    public void setPostId(long postId) {
+        this.postId = postId;
     }
 }

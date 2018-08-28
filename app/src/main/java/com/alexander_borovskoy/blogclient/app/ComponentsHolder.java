@@ -8,6 +8,7 @@ import com.alexander_borovskoy.blogclient.app.di.DaggerAppComponent;
 import com.alexander_borovskoy.blogclient.data.source.di.BlogServiceModule;
 import com.alexander_borovskoy.blogclient.data.source.di.DataSourceComponent;
 import com.alexander_borovskoy.blogclient.data.source.di.DataSourceModule;
+import com.alexander_borovskoy.blogclient.data.source.di.RealmModule;
 import com.alexander_borovskoy.blogclient.ui.postdetails.PostDetailFragment;
 import com.alexander_borovskoy.blogclient.ui.postdetails.di.PostDetailComponent;
 import com.alexander_borovskoy.blogclient.ui.postdetails.di.PostDetailModule;
@@ -17,12 +18,14 @@ import com.alexander_borovskoy.blogclient.ui.postlist.di.PostListModule;
 
 public class ComponentsHolder {
 
+    private Context appContext;
     private AppComponent appComponent;
     private DataSourceComponent dataSourceComponent;
     private PostListComponent postListComponent;
     private PostDetailComponent postDetailComponent;
 
     public ComponentsHolder(Context appContext) {
+        this.appContext = appContext;
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(appContext))
                 .build();
@@ -36,9 +39,8 @@ public class ComponentsHolder {
         if (dataSourceComponent == null) {
             dataSourceComponent = appComponent
                     .dataSourceComponent(new DataSourceModule(),
-                            new BlogServiceModule());
+                            new BlogServiceModule(), new RealmModule(appContext));
         }
-
         return dataSourceComponent;
     }
 
@@ -49,7 +51,6 @@ public class ComponentsHolder {
     public PostListComponent getPostListComponent(PostListFragment fragment) {
         if (postListComponent == null) {
             postListComponent = dataSourceComponent.postListComponent(new PostListModule(fragment));
-
         }
         return postListComponent;
     }

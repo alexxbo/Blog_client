@@ -17,9 +17,9 @@ public interface PostsDataSource {
         void onDataNotAvailable();
     }
 
-    interface GetPostsCallback {
+    interface LoadPostCallback {
 
-        void onPostsLoaded(Post post);
+        void onPostLoaded(Post post);
 
         void onDataNotAvailable();
     }
@@ -38,7 +38,7 @@ public interface PostsDataSource {
 
     void getAllPosts(@NonNull LoadPostsCallback callback);
 
-    void getPost(long postId, @NonNull GetPostsCallback callback);
+    void getPost(long postId, @NonNull LoadPostCallback callback);
 
     void getPostMarks(long postId, @NonNull LoadPostMarksCallback callback);
 

@@ -1,10 +1,8 @@
 package com.alexander_borovskoy.blogclient.ui.postlist;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.alexander_borovskoy.blogclient.data.Post;
-import com.alexander_borovskoy.blogclient.data.source.PostRepository;
 import com.alexander_borovskoy.blogclient.data.source.PostsDataSource;
 
 import java.util.List;
@@ -26,14 +24,11 @@ public class PostsPresenter implements PostListContract.Presenter {
 
     @Override
     public void updatePosts() {
-        Log.d(TAG, "updatePosts: ");
-
         mPostsView.setLoadingIndicator(true);
         mRepo.getAllPosts(new PostsDataSource.LoadPostsCallback() {
             @Override
             public void onPostsLoaded(List<Post> postList) {
-                Log.d(TAG, "onPostsLoaded: " + postList.size());
-                    mPostsView.setLoadingIndicator(false);
+                mPostsView.setLoadingIndicator(false);
                 if (postList.isEmpty()) {
                     mPostsView.showNoPosts();
                 } else {
@@ -43,7 +38,6 @@ public class PostsPresenter implements PostListContract.Presenter {
 
             @Override
             public void onDataNotAvailable() {
-                Log.d(TAG, "onDataNotAvailable: ");
                 mPostsView.setLoadingIndicator(false);
                 mPostsView.showLoadingPostsError();
             }

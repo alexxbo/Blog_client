@@ -1,12 +1,10 @@
 package com.alexander_borovskoy.blogclient.ui.postdetails;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.alexander_borovskoy.blogclient.data.Comment;
 import com.alexander_borovskoy.blogclient.data.Mark;
 import com.alexander_borovskoy.blogclient.data.Post;
-import com.alexander_borovskoy.blogclient.data.source.PostRepository;
 import com.alexander_borovskoy.blogclient.data.source.PostsDataSource;
 
 import java.util.List;
@@ -27,14 +25,9 @@ public class PostDetailPresenter implements PostDetailContract.Presenter {
 
     @Override
     public void updatePost() {
-        Log.d(TAG, "updatePost: ");
-
-        mPostDetailView.setLoadingIndicator(true);
-        mRepo.getPost(mPostId, new PostsDataSource.GetPostsCallback() {
+        mRepo.getPost(mPostId, new PostsDataSource.LoadPostCallback() {
             @Override
-            public void onPostsLoaded(Post post) {
-                Log.d(TAG, "onPostsLoaded: postTitle - " + post.getTitle());
-                mPostDetailView.setLoadingIndicator(false);
+            public void onPostLoaded(Post post) {
                 mPostDetailView.showPost(post);
                 updatePostMarks();
                 updatePostComments();
@@ -42,8 +35,6 @@ public class PostDetailPresenter implements PostDetailContract.Presenter {
 
             @Override
             public void onDataNotAvailable() {
-                Log.d(TAG, "onDataNotAvailable: ");
-                mPostDetailView.setLoadingIndicator(false);
                 mPostDetailView.showLoadingPostError();
             }
         });
@@ -70,9 +61,11 @@ public class PostDetailPresenter implements PostDetailContract.Presenter {
 
     @Override
     public void updatePostComments() {
+        mPostDetailView.setLoadingIndicator(true);
         mRepo.getPostComments(mPostId, new PostsDataSource.LoadPostCommentsCallback() {
             @Override
             public void onPostCommentsLoaded(List<Comment> commentList) {
+                mPostDetailView.setLoadingIndicator(false);
                 if (commentList.isEmpty()) {
                     mPostDetailView.showNoComments();
                 } else {
@@ -82,6 +75,7 @@ public class PostDetailPresenter implements PostDetailContract.Presenter {
 
             @Override
             public void onDataNotAvailable() {
+                mPostDetailView.setLoadingIndicator(false);
                 mPostDetailView.showLoadingPostCommentsError();
             }
         });

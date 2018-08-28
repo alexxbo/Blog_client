@@ -73,12 +73,12 @@
             android:background="?android:attr/listDivider" />
 
         <LinearLayout
-            android:visibility="gone"
-            android:gravity="center"
             android:id="@+id/no_comments"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/no_comments_icon"
@@ -88,24 +88,28 @@
                 android:src="@drawable/ic_mode_comment_grey_700_24dp" />
 
             <TextView
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Widget.Button"
-                android:text="@string/no_comments_all"
                 android:id="@+id/tv_no_comments"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:text="@string/no_comments_all"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Widget.Button" />
 
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/comments_recycler"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/post_comments_swipe_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_comment" />
+            android:layout_height="wrap_content">
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/comments_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_comment" />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
 
     </LinearLayout>
-
-
 </layout>
