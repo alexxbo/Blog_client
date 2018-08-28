@@ -83,7 +83,7 @@ public class LocalPostRepository implements PostsDataSource {
         realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(@NonNull Realm realm) {
-                realm.insert(marks);
+                realm.insertOrUpdate(marks);
             }
         });
     }

@@ -11,9 +11,12 @@ import android.view.MenuItem;
 import com.alexander_borovskoy.blogclient.R;
 import com.alexander_borovskoy.blogclient.app.App;
 import com.alexander_borovskoy.blogclient.databinding.ActivityMainBinding;
+import com.alexander_borovskoy.blogclient.ui.postdetails.PostDetailFragment;
 import com.alexander_borovskoy.blogclient.ui.postlist.PostListFragment;
 
 public class MainActivity extends AppCompatActivity {
+
+    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +26,10 @@ public class MainActivity extends AppCompatActivity {
 
         App.getInstance().getComponentsHolder().getDataSourceComponent();
 
+        if (binding.mainContent.detailContainer != null){
+            mTwoPane = true;
+        }
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .addToBackStack(PostListFragment.TAG)
@@ -31,39 +38,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     public void replaceFragment(Fragment fragment, String tag) {
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
 
-        if (currentFragment.getClass() == fragment.getClass()) {
-            return;
-        }
-
-        if (getSupportFragmentManager().findFragmentByTag(tag) != null) {
-            getSupportFragmentManager().popBackStack(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
-
-        getSupportFragmentManager()
+        if (mTwoPane){
+            getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.detail_container, fragment, tag)
+                .commit();
+        } else {
+            getSupportFragmentManager()
                 .beginTransaction()
                 .addToBackStack(tag)
                 .replace(R.id.container, fragment, tag)
                 .commit();
+        }
     }
 
     @Override
