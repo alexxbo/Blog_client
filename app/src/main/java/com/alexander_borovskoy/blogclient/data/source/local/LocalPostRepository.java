@@ -13,6 +13,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 
 public class LocalPostRepository implements PostsDataSource {
@@ -92,16 +93,21 @@ public class LocalPostRepository implements PostsDataSource {
         realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                realm.insert(comments);
+                realm.insertOrUpdate(comments);
             }
         });
     }
 
-    public void deleteAll() {
+    public void updatePosts(final List<Post> postList) {
         realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 realm.deleteAll();
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                addPosts(postList);
             }
         });
     }
@@ -133,7 +139,7 @@ public class LocalPostRepository implements PostsDataSource {
         });
     }
 
-    public void closeRealm(){
+    public void closeRealm() {
         realm.close();
     }
 }

@@ -1,6 +1,7 @@
 package com.alexander_borovskoy.blogclient.data.source;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.alexander_borovskoy.blogclient.data.Comment;
 import com.alexander_borovskoy.blogclient.data.Mark;
@@ -11,6 +12,8 @@ import com.alexander_borovskoy.blogclient.data.source.remote.RemotePostRepositor
 import java.util.List;
 
 import javax.inject.Inject;
+
+import io.realm.Realm;
 
 public class PostRepository implements PostsDataSource {
 
@@ -27,6 +30,21 @@ public class PostRepository implements PostsDataSource {
 
     @Override
     public void getAllPosts(@NonNull final LoadPostsCallback callback) {
+        remoteRepository.getAllPosts(new LoadPostsCallback() {
+            @Override
+            public void onPostsLoaded(List<Post> postList) {
+                callback.onPostsLoaded(postList);
+                refreshLocalPosts(postList);
+            }
+
+            @Override
+            public void onDataNotAvailable() {
+                getPostsFromLocalDataSource(callback);
+            }
+        });
+    }
+
+    private void getPostsFromLocalDataSource(final LoadPostsCallback callback) {
         localRepository.getAllPosts(new LoadPostsCallback() {
             @Override
             public void onPostsLoaded(List<Post> postList) {
@@ -35,7 +53,7 @@ public class PostRepository implements PostsDataSource {
 
             @Override
             public void onDataNotAvailable() {
-                getPostsFromRemoteDataSource(callback);
+                callback.onDataNotAvailable();
             }
         });
     }
@@ -50,19 +68,22 @@ public class PostRepository implements PostsDataSource {
 
             @Override
             public void onDataNotAvailable() {
-                // TODO: 27.08.2018 refactoring
-                remoteRepository.getPost(postId, new LoadPostCallback() {
-                    @Override
-                    public void onPostLoaded(Post post) {
-                        callback.onPostLoaded(post);
-                        localRepository.addPost(post);
-                    }
+                getPostFromRemoteDataSource(postId, callback);
+            }
+        });
+    }
 
-                    @Override
-                    public void onDataNotAvailable() {
-                        callback.onDataNotAvailable();
-                    }
-                });
+    private void getPostFromRemoteDataSource(final long postId, final LoadPostCallback callback) {
+        remoteRepository.getPost(postId, new LoadPostCallback() {
+            @Override
+            public void onPostLoaded(Post post) {
+                callback.onPostLoaded(post);
+                localRepository.addPost(post);
+            }
+
+            @Override
+            public void onDataNotAvailable() {
+                callback.onDataNotAvailable();
             }
         });
     }
@@ -88,26 +109,12 @@ public class PostRepository implements PostsDataSource {
             @Override
             public void onPostCommentsLoaded(List<Comment> commentList) {
                 callback.onPostCommentsLoaded(commentList);
+                refreshComments(postId, callback);
             }
 
             @Override
             public void onDataNotAvailable() {
                 getCommentsFromRemoteDataSource(postId, callback);
-            }
-        });
-    }
-
-    private void getPostsFromRemoteDataSource(final LoadPostsCallback callback) {
-        remoteRepository.getAllPosts(new LoadPostsCallback() {
-            @Override
-            public void onPostsLoaded(List<Post> postList) {
-                refreshLocalDataSource(postList);
-                callback.onPostsLoaded(postList);
-            }
-
-            @Override
-            public void onDataNotAvailable() {
-                callback.onDataNotAvailable();
             }
         });
     }
@@ -147,8 +154,22 @@ public class PostRepository implements PostsDataSource {
         });
     }
 
-    private void refreshLocalDataSource(List<Post> postList) {
-        localRepository.deleteAll();
-        localRepository.addPosts(postList);
+    private void refreshLocalPosts(List<Post> postList) {
+        localRepository.updatePosts(postList);
+    }
+
+    private void refreshComments(final long postId, @NonNull final LoadPostCommentsCallback callback) {
+        remoteRepository.getPostComments(postId, new LoadPostCommentsCallback() {
+            @Override
+            public void onPostCommentsLoaded(List<Comment> commentList) {
+                callback.onPostCommentsLoaded(commentList);
+                localRepository.addComments(commentList);
+            }
+
+            @Override
+            public void onDataNotAvailable() {
+
+            }
+        });
     }
 }
