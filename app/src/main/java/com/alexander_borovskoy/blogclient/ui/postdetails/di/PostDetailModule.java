@@ -22,13 +22,13 @@ public class PostDetailModule {
 
     @PostDetailScope
     @Provides
-    CommentAdapter provideCommentAdapter(){
+    CommentAdapter provideCommentAdapter() {
         return new CommentAdapter();
     }
 
     @PostDetailScope
     @Provides
-    PostDetailContract.Presenter providePostDetailPresenter(PostsDataSource repository){
+    PostDetailContract.Presenter providePostDetailPresenter(PostsDataSource repository) {
         return new PostDetailPresenter(postId, repository, fragment);
     }
 }

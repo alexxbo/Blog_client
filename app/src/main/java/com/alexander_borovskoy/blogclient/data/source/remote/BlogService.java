@@ -17,9 +17,6 @@ public interface BlogService {
     @GET("/api/v1/posts")
     Call<List<Post>> getAllPosts();
 
-//    @GET("/api/v1/posts")
-//    Call<List<Post>> getAllPosts(@Query("page") int page, @Query("size") int postCounts);
-
     @GET("/api/v1/posts/{id}/marks")
     Call<List<Mark>> getPostMarks(@Path("id") long postId);
 

@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.alexander_borovskoy.blogclient.R;
 import com.alexander_borovskoy.blogclient.app.App;

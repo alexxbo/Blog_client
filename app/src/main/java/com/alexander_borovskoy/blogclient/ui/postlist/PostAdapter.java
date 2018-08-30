@@ -9,8 +9,8 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.alexander_borovskoy.blogclient.R;
-import com.alexander_borovskoy.blogclient.databinding.ItemPostBinding;
 import com.alexander_borovskoy.blogclient.data.Post;
+import com.alexander_borovskoy.blogclient.databinding.ItemPostBinding;
 
 import java.util.List;
 import java.util.Objects;

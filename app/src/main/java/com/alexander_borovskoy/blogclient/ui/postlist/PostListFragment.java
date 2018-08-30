@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,12 +39,6 @@ public class PostListFragment extends Fragment implements PostListContract.View,
     public static PostListFragment newInstance() {
         return new PostListFragment();
     }
-
-//    @Override
-//    public void onCreate(@Nullable Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setRetainInstance(true);
-//    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,

@@ -13,12 +13,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class BlogServiceModule {
 
+    private static final int READ_TIMEOUT = 60;
+    private static final int CONNECT_TIMEOUT = 15;
+
     @DataSourceScope
     @Provides
     public OkHttpClient provideOkHttpClient() {
         return new OkHttpClient.Builder()
-                .readTimeout(30, TimeUnit.SECONDS)
-                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
+                .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
                 .build();
     }
 

@@ -1,7 +1,6 @@
 package com.alexander_borovskoy.blogclient.data.source;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.alexander_borovskoy.blogclient.data.Comment;
 import com.alexander_borovskoy.blogclient.data.Mark;
@@ -12,8 +11,6 @@ import com.alexander_borovskoy.blogclient.data.source.remote.RemotePostRepositor
 import java.util.List;
 
 import javax.inject.Inject;
-
-import io.realm.Realm;
 
 public class PostRepository implements PostsDataSource {
 

@@ -16,13 +16,13 @@ public class RealmModule {
 
     @DataSourceScope
     @Provides
-    Realm provideRealm(RealmConfiguration configuration){
+    Realm provideRealm(RealmConfiguration configuration) {
         return Realm.getInstance(configuration);
     }
 
     @DataSourceScope
     @Provides
-    RealmConfiguration provideRealmConfiguration(){
+    RealmConfiguration provideRealmConfiguration() {
         return new RealmConfiguration.Builder()
                 .name("posts.realm")
                 .schemaVersion(0)

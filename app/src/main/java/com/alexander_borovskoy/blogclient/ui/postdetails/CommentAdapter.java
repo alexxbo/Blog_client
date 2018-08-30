@@ -8,8 +8,8 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.alexander_borovskoy.blogclient.R;
-import com.alexander_borovskoy.blogclient.databinding.ItemCommentBinding;
 import com.alexander_borovskoy.blogclient.data.Comment;
+import com.alexander_borovskoy.blogclient.databinding.ItemCommentBinding;
 
 import java.util.List;
 import java.util.Objects;
@@ -36,9 +36,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         return mCommentList == null ? 0 : mCommentList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         final ItemCommentBinding binding;
+
         public ViewHolder(ItemCommentBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
